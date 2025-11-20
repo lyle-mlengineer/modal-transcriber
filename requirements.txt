@@ -2,3 +2,9 @@ modal
 requests
 librosa
 openai-whisper
+fastapi[standard]
+pydantic
+uvicorn
+oryks-google-drive
+
+#pip install /home/lyle/GitHub/gdrive/dist/oryks_google_drive-0.1.0-py3-none-any.whl

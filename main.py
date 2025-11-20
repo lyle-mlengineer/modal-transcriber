@@ -23,23 +23,29 @@ class Transcribe:
     @modal.method()
     def transcribe(
         self,
-        audio_data: list[float]  # Audio data as a list of floats,
+        audio_url: str, # Audio data as a list of floats,
     ) -> str:
-
-        transcription = self.model.transcribe(audio_data)["text"]
+        audio, samplerate = self.download_audio(audio_url)
+        transcription = self.model.transcribe(audio)["text"]
 
         return transcription
     
-def read_audio_with_soundfile(filepath):
-    data, samplerate = sf.read(filepath)
-    return data, samplerate
+    def download_audio(self, url: str) -> bytes:
+        import requests
+        import librosa
+        import io
+
+        response = requests.get(url)
+        response.raise_for_status()  # Ensure we raise an error for bad responses
+        audio_data, samplerate = librosa.load(io.BytesIO(response.content), sr=None)
+        return audio_data, samplerate
+    
 
 @app.local_entrypoint()
-def main(audio_path: str):
-    import librosa
+def main():
 
-    audio_data, _ = librosa.load(audio_path, sr=16000)
-    text = Transcribe().transcribe.remote(audio_data)
+    audio_url: str = "https://github.com/lyle-mlengineer/modal-transcriber/raw/refs/heads/main/maongezi.wav"
+    text = Transcribe().transcribe.local(audio_url)
     print(f"Transcription: {text}")
 
     # To run the app in the cloud, use:
