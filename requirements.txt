@@ -1,0 +1,4 @@
+modal
+requests
+librosa
+openai-whisper
